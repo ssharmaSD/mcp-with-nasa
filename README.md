@@ -14,13 +14,17 @@ Note: This project was developed with the help of Cursor!
 - **Image Search**: Search APOD images by date range
 - **HD Support**: Access high-definition versions of images
 
+## 🌐 Live Demo
+
+**GitHub Pages**: [View Live Demo](https://ssharmaSD.github.io/mcp-with-nasa/)
+
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - Node.js 18+ 
 - NASA API key (free at [api.nasa.gov](https://api.nasa.gov/))
-- OpenAI API key (for AI capabilities)
+- AI capabilities (multiple free options available!)
 
 ### Installation
 
@@ -216,6 +220,25 @@ mcp-with-nasa/
 - [NASA API Documentation](https://api.nasa.gov/)
 - [OpenAI API Documentation](https://platform.openai.com/docs)
 - [Astronomy Picture of the Day](https://apod.nasa.gov/)
+
+## 🌐 GitHub Pages Deployment
+
+This project is automatically deployed to GitHub Pages! 
+
+### View Live Demo
+- **Live Site**: https://ssharmaSD.github.io/mcp-with-nasa/
+- **Repository**: https://github.com/ssharmaSD/mcp-with-nasa
+
+### Deploy Your Own
+1. Fork this repository
+2. Go to Settings → Pages
+3. Select "GitHub Actions" as source
+4. The site will automatically deploy on every push to main
+
+### Custom Domain (Optional)
+1. Add a `CNAME` file with your domain
+2. Configure DNS to point to `ssharmaSD.github.io`
+3. Enable HTTPS in GitHub Pages settings
 
 ## 🤝 Contributing
 

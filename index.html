@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA APOD with MCP and AI Agent</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .badge {
+            background: rgba(78, 205, 196, 0.2);
+            border: 1px solid #4ecdc4;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #4ecdc4;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: #4ecdc4;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-card li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .feature-card li:before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+        }
+
+        .cta-section {
+            text-align: center;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .cta-section h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+        }
+
+        .demo-section {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .demo-image {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            margin: 20px 0;
+        }
+
+        .tech-stack {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .tech-stack h3 {
+            color: #4ecdc4;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tech-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .tech-item {
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid #4ecdc4;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .badges {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-rocket"></i> NASA APOD with MCP and AI Agent</h1>
+            <p>Explore the cosmos with NASA's Astronomy Picture of the Day and ask questions to our AI agent</p>
+            
+            <div class="badges">
+                <div class="badge">🆓 Completely Free</div>
+                <div class="badge">🤖 AI-Powered</div>
+                <div class="badge">🌌 NASA Integration</div>
+                <div class="badge">⚡ Real-time</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3><i class="fas fa-brain"></i> AI Agent Capabilities</h3>
+                <ul>
+                    <li>Image analysis and description</li>
+                    <li>Astronomy Q&A</li>
+                    <li>Scientific explanations</li>
+                    <li>Educational content</li>
+                    <li>Multiple AI options (Free!)</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3><i class="fas fa-image"></i> NASA Integration</h3>
+                <ul>
+                    <li>Daily Astronomy Picture of the Day</li>
+                    <li>HD image support</li>
+                    <li>Historical image search</li>
+                    <li>Detailed explanations</li>
+                    <li>Real-time updates</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3><i class="fas fa-cogs"></i> Technical Features</h3>
+                <ul>
+                    <li>Model Context Protocol (MCP)</li>
+                    <li>REST API endpoints</li>
+                    <li>CLI tool</li>
+                    <li>Web interface</li>
+                    <li>Docker support</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Ready to Explore the Cosmos?</h2>
+            <p>Get started with our completely free NASA APOD project with AI agent capabilities. No API costs, no hidden fees!</p>
+            
+            <div class="cta-buttons">
+                <a href="https://github.com/ssharmaSD/mcp-with-nasa" class="btn">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+                <a href="https://github.com/ssharmaSD/mcp-with-nasa#quick-start" class="btn btn-secondary">
+                    <i class="fas fa-play"></i> Quick Start
+                </a>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2><i class="fas fa-desktop"></i> Live Demo</h2>
+            <p>Experience the power of AI-driven space exploration</p>
+            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin: 20px 0;">
+                <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> This is a static demo. For the full interactive experience, clone and run the project locally or deploy it to your own server.</p>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <h3><i class="fas fa-code"></i> Built With</h3>
+            <div class="tech-items">
+                <div class="tech-item">Node.js</div>
+                <div class="tech-item">Express</div>
+                <div class="tech-item">MCP SDK</div>
+                <div class="tech-item">OpenAI</div>
+                <div class="tech-item">Ollama</div>
+                <div class="tech-item">Hugging Face</div>
+                <div class="tech-item">NASA API</div>
+                <div class="tech-item">HTML5/CSS3</div>
+                <div class="tech-item">JavaScript</div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>🚀 Get Started Today</h2>
+            <p>Join the community of space enthusiasts exploring the universe with AI!</p>
+            
+            <div class="cta-buttons">
+                <a href="https://github.com/ssharmaSD/mcp-with-nasa" class="btn">
+                    <i class="fas fa-star"></i> Star on GitHub
+                </a>
+                <a href="https://github.com/ssharmaSD/mcp-with-nasa/fork" class="btn btn-secondary">
+                    <i class="fas fa-code-branch"></i> Fork Project
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
