@@ -1,0 +1,32 @@
+{
+  "name": "mcp-with-nasa",
+  "version": "1.0.0",
+  "description": "NASA Image of the Day with MCP and Agentic Capabilities",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "mcp-server": "node src/mcp-server.js",
+    "client": "node src/cli.js",
+    "setup": "node setup.js",
+    "test": "node test-mcp.js"
+  },
+  "keywords": ["mcp", "nasa", "ai", "agent", "image-analysis"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "openai": "^4.20.0",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.32.6",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

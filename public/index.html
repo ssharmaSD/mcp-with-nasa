@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA APOD with AI Agent</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .agent-status {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid #4ecdc4;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #4ecdc4;
+            display: inline-block;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .image-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .image-section h2 {
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+
+        .image-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .apod-image {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .apod-image:hover {
+            transform: scale(1.02);
+        }
+
+        .image-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .image-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+        }
+
+        .image-explanation {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .chat-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-section h2 {
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            margin-left: auto;
+        }
+
+        .message.agent {
+            background: linear-gradient(45deg, #4ecdc4, #6dd5ed);
+            color: #000;
+        }
+
+        .message.system {
+            background: rgba(255, 255, 255, 0.1);
+            font-style: italic;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+
+        .chat-input input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #4ecdc4;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #4ecdc4;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background: rgba(78, 205, 196, 0.2);
+            border: 1px solid #4ecdc4;
+            color: #4ecdc4;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-rocket"></i> NASA APOD with AI Agent</h1>
+            <p>Explore the cosmos with NASA's Astronomy Picture of the Day and ask questions to our AI agent</p>
+            <div id="agentStatus" class="agent-status">
+                <i class="fas fa-spinner fa-spin"></i> Loading agent status...
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="image-section">
+                <h2><i class="fas fa-image"></i> Today's Image</h2>
+                
+                <div class="controls">
+                    <button class="btn" onclick="loadImageOfTheDay()">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                    <button class="btn" onclick="loadImageWithAnalysis()">
+                        <i class="fas fa-brain"></i> Analyze
+                    </button>
+                    <button class="btn" onclick="loadHDImage()">
+                        <i class="fas fa-expand"></i> HD Version
+                    </button>
+                </div>
+
+                <div class="input-group">
+                    <label for="dateInput">Specific Date (MM/DD/YYYY):</label>
+                    <input type="date" id="dateInput" placeholder="Select a date">
+                </div>
+
+                <div class="loading" id="imageLoading">
+                    <div class="spinner"></div>
+                    
+                    Loading image...
+                </div>
+
+                <div id="imageContainer" class="image-container">
+                    <!-- Image will be loaded here -->
+                </div>
+
+                <div id="imageInfo" class="image-info" style="display: none;">
+                    <!-- Image information will be loaded here -->
+                </div>
+            </div>
+
+            <div class="chat-section">
+                <h2><i class="fas fa-robot"></i> Ask the AI Agent</h2>
+                
+                <div id="chatMessages" class="chat-messages">
+                    <div class="message system">
+                        <i class="fas fa-info-circle"></i> Welcome! Ask me anything about today's NASA image or astronomy in general.
+                    </div>
+                </div>
+
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Ask about the image or astronomy..." onkeypress="handleKeyPress(event)">
+                    <button class="btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+
+                <div class="loading" id="chatLoading">
+                    <div class="spinner"></div>
+                    AI is thinking...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentImageData = null;
+
+        // Load image of the day on page load
+        window.onload = function() {
+            loadImageOfTheDay();
+            loadAgentStatus();
+        };
+
+        async function loadImageOfTheDay() {
+            showLoading('imageLoading');
+            try {
+                const response = await fetch('/api/image-of-the-day');
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                displayImage(data);
+                currentImageData = data;
+            } catch (error) {
+                showError('Failed to load image: ' + error.message);
+            } finally {
+                hideLoading('imageLoading');
+            }
+        }
+
+        async function loadImageWithAnalysis() {
+            showLoading('imageLoading');
+            try {
+                const response = await fetch('/api/image-of-the-day?analyze=true');
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                displayImage(data);
+                if (data.analysis) {
+                    addMessage('agent', `AI Analysis: ${data.analysis}`);
+                }
+                currentImageData = data;
+            } catch (error) {
+                showError('Failed to load image with analysis: ' + error.message);
+            } finally {
+                hideLoading('imageLoading');
+            }
+        }
+
+        async function loadHDImage() {
+            showLoading('imageLoading');
+            try {
+                const response = await fetch('/api/image-of-the-day?hd=true');
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                displayImage(data);
+                currentImageData = data;
+            } catch (error) {
+                showError('Failed to load HD image: ' + error.message);
+            } finally {
+                hideLoading('imageLoading');
+            }
+        }
+
+        function displayImage(data) {
+            const container = document.getElementById('imageContainer');
+            const infoDiv = document.getElementById('imageInfo');
+            
+            if (data.content && data.content.length > 0) {
+                const textContent = data.content.find(c => c.type === 'text');
+                const imageContent = data.content.find(c => c.type === 'image_url');
+                
+                if (imageContent && imageContent.image_url) {
+                    container.innerHTML = `
+                        <img src="${imageContent.image_url.url}" alt="NASA APOD" class="apod-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBhdmFpbGFibGU8L3RleHQ+PC9zdmc+'">
+                    `;
+                }
+                
+                if (textContent) {
+                    const lines = textContent.text.split('\n');
+                    const title = lines.find(line => line.startsWith('**Title:**'))?.replace('**Title:**', '').trim();
+                    const explanation = lines.find(line => line.startsWith('**Explanation:**'))?.replace('**Explanation:**', '').trim();
+                    
+                    if (title || explanation) {
+                        infoDiv.innerHTML = `
+                            ${title ? `<div class="image-title">${title}</div>` : ''}
+                            ${explanation ? `<div class="image-explanation">${explanation}</div>` : ''}
+                        `;
+                        infoDiv.style.display = 'block';
+                    }
+                }
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage('user', message);
+            input.value = '';
+            
+            showLoading('chatLoading');
+            
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: message,
+                        imageUrl: currentImageData?.content?.find(c => c.type === 'image_url')?.image_url?.url
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                addMessage('agent', data.answer);
+            } catch (error) {
+                addMessage('system', 'Error: ' + error.message);
+            } finally {
+                hideLoading('chatLoading');
+            }
+        }
+
+        function addMessage(sender, text) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = text.replace(/\n/g, '<br>');
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function showLoading(elementId) {
+            document.getElementById(elementId).classList.add('show');
+        }
+
+        function hideLoading(elementId) {
+            document.getElementById(elementId).classList.remove('show');
+        }
+
+        function showError(message) {
+            const container = document.getElementById('imageContainer');
+            container.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        async function loadAgentStatus() {
+            try {
+                const response = await fetch('/api/agent-status');
+                const agentInfo = await response.json();
+                
+                const statusDiv = document.getElementById('agentStatus');
+                statusDiv.innerHTML = `
+                    <i class="fas fa-robot"></i> ${agentInfo.status}
+                    <br><small>Capabilities: ${agentInfo.capabilities.join(', ')}</small>
+                `;
+            } catch (error) {
+                const statusDiv = document.getElementById('agentStatus');
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Agent status unavailable';
+            }
+        }
+
+        // Load specific date image when date is selected
+        document.getElementById('dateInput').addEventListener('change', function() {
+            const selectedDate = this.value;
+            if (selectedDate) {
+                loadImageByDate(selectedDate);
+            }
+        });
+
+        async function loadImageByDate(date) {
+            showLoading('imageLoading');
+            try {
+                const response = await fetch(`/api/image-of-the-day?date=${date}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                displayImage(data);
+                currentImageData = data;
+            } catch (error) {
+                showError('Failed to load image for date: ' + error.message);
+            } finally {
+                hideLoading('imageLoading');
+            }
+        }
+    </script>
+</body>
+</html>
