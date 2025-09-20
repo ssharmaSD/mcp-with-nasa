@@ -7,12 +7,11 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import axios from 'axios';
-import dotenv from 'dotenv';
+import Config from './config.js';
 
-dotenv.config();
-
+const config = new Config();
 const NASA_API_BASE = 'https://api.nasa.gov/planetary/apod';
-const NASA_API_KEY = process.env.NASA_API_KEY || 'DEMO_KEY';
+const NASA_API_KEY = config.getNasaApiKey();
 
 class NASAMCPServer {
   constructor() {

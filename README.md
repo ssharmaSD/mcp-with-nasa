@@ -23,10 +23,12 @@ Note: This project was developed with the help of Cursor!
 ### Prerequisites
 
 - Node.js 18+ 
-- NASA API key (free at [api.nasa.gov](https://api.nasa.gov/))
-- AI capabilities (multiple free options available!)
+- **Optional**: NASA API key (free at [api.nasa.gov](https://api.nasa.gov/))
+- **Optional**: AI API key (multiple free options available!)
 
 ### Installation
+
+#### Option 1: Quick Start (Uses Fallback Keys)
 
 1. **Clone and install dependencies:**
    ```bash
@@ -35,18 +37,28 @@ Note: This project was developed with the help of Cursor!
    npm install
    ```
 
-2. **Set up environment variables:**
+2. **Start immediately:**
    ```bash
-   cp env.example .env
+   npm start
    ```
    
-   Edit `.env` and add your API keys:
-   ```env
-   NASA_API_KEY=your_nasa_api_key_here
-   OPENAI_API_KEY=your_openai_api_key_here
-   PORT=3000
-   MCP_SERVER_PORT=3001
+   The application will use fallback API keys and work out of the box! 🎉
+
+#### Option 2: Use Your Own API Keys
+
+1. **Clone and install dependencies:**
+   ```bash
+   git clone <your-repo-url>
+   cd mcp-with-nasa
+   npm install
    ```
+
+2. **Run the setup script:**
+   ```bash
+   npm run setup
+   ```
+   
+   This interactive script will help you configure your API keys and AI options.
 
 3. **Start the application:**
    ```bash
@@ -55,6 +67,22 @@ Note: This project was developed with the help of Cursor!
 
 4. **Open your browser:**
    Navigate to `http://localhost:3000`
+
+### 🔑 API Key Options
+
+#### NASA API (Required for APOD data)
+- **Free**: Get your key at [api.nasa.gov](https://api.nasa.gov/)
+- **Fallback**: Uses demo key with limited functionality
+
+#### AI Capabilities (Optional)
+- **OpenAI** (Paid, best quality): Get key at [platform.openai.com](https://platform.openai.com/)
+- **Free Agent** (No costs): Basic astronomy knowledge and pattern recognition
+- **Ollama** (Local, free): Install [Ollama](https://ollama.ai/) for local AI
+- **Hugging Face** (Free API): Get key at [huggingface.co](https://huggingface.co/)
+
+### 📊 Configuration Status
+
+Check your configuration at: `http://localhost:3000/api/config-status`
 
 ## 📖 Usage
 
@@ -213,6 +241,50 @@ mcp-with-nasa/
 - Never commit `.env` files to version control
 - Use HTTPS in production
 - Implement rate limiting for production use
+
+## 🔑 Fallback API Keys
+
+This repository includes fallback API keys that allow users to run the application immediately without setting up their own keys:
+
+- **NASA API**: Uses demo key with limited functionality
+- **OpenAI API**: Not included (users must provide their own or use free alternatives)
+
+### Using Your Own Keys
+
+To use your own API keys:
+
+1. **Run the setup script:**
+   ```bash
+   npm run setup
+   ```
+
+2. **Or manually edit `.env`:**
+   ```env
+   # NASA API Key (get from https://api.nasa.gov/)
+   NASA_API_KEY=your_nasa_api_key_here
+   
+   # AI Configuration (choose one)
+   OPENAI_API_KEY=your_openai_api_key_here
+   # OR
+   USE_FREE_AGENT=true
+   # OR
+   OLLAMA_HOST=http://localhost:11434
+   USE_OLLAMA=true
+   # OR
+   HUGGINGFACE_API_KEY=your_huggingface_api_key_here
+   
+   # Server Configuration
+   PORT=3000
+   MCP_SERVER_PORT=3001
+   ```
+
+### Configuration Status
+
+The application provides real-time configuration status:
+
+- **Web Interface**: Visit `/api/config-status` for detailed status
+- **Console Output**: Shows configuration status on startup
+- **Agent Status**: Visit `/api/agent-status` for AI capabilities
 
 ## 📚 Learning Resources
 

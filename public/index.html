@@ -56,6 +56,65 @@
             display: inline-block;
         }
 
+        .config-status {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .config-status h3 {
+            color: #4ecdc4;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .config-item:last-child {
+            border-bottom: none;
+        }
+
+        .config-label {
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .config-value {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .config-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+
+        .config-warning {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+            border: 1px solid #ff9800;
+        }
+
+        .config-info {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+            border: 1px solid #2196f3;
+        }
+
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -303,6 +362,11 @@
             </div>
         </div>
 
+        <div class="config-status" id="configStatus" style="display: none;">
+            <h3><i class="fas fa-cog"></i> Configuration Status</h3>
+            <div id="configDetails"></div>
+        </div>
+
         <div class="main-content">
             <div class="image-section">
                 <h2><i class="fas fa-image"></i> Today's Image</h2>
@@ -370,6 +434,7 @@
         window.onload = function() {
             loadImageOfTheDay();
             loadAgentStatus();
+            loadConfigStatus();
         };
 
         async function loadImageOfTheDay() {
@@ -540,6 +605,73 @@
             } catch (error) {
                 const statusDiv = document.getElementById('agentStatus');
                 statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Agent status unavailable';
+            }
+        }
+
+        async function loadConfigStatus() {
+            try {
+                const response = await fetch('/api/config-status');
+                const config = await response.json();
+                
+                const configDiv = document.getElementById('configDetails');
+                const configStatus = document.getElementById('configStatus');
+                
+                let html = '';
+                
+                // NASA API Status
+                const nasaStatus = config.keyStatus.nasa;
+                const nasaClass = nasaStatus.available ? 'config-success' : 'config-warning';
+                const nasaText = nasaStatus.available ? 
+                    (nasaStatus.usingFallback ? 'Using Fallback' : 'Your Key') : 
+                    'Not Available';
+                
+                html += `
+                    <div class="config-item">
+                        <span class="config-label">🌍 NASA API</span>
+                        <span class="config-value ${nasaClass}">${nasaText}</span>
+                    </div>
+                `;
+                
+                // AI Status
+                const aiStatus = config.keyStatus.openai;
+                const aiClass = aiStatus.available ? 'config-success' : 
+                               config.keyStatus.freeAgent ? 'config-info' : 'config-warning';
+                let aiText = 'Not Available';
+                
+                if (aiStatus.available) {
+                    aiText = aiStatus.usingFallback ? 'Using Fallback' : 'Your Key';
+                } else if (config.keyStatus.freeAgent) {
+                    aiText = 'Free Agent';
+                } else if (config.keyStatus.ollama) {
+                    aiText = 'Ollama';
+                } else if (config.keyStatus.huggingface) {
+                    aiText = 'Hugging Face';
+                }
+                
+                html += `
+                    <div class="config-item">
+                        <span class="config-label">🤖 AI Service</span>
+                        <span class="config-value ${aiClass}">${aiText}</span>
+                    </div>
+                `;
+                
+                // Show setup instructions if using fallback keys
+                if (config.fallbackKeys.nasa || config.fallbackKeys.openai) {
+                    html += `
+                        <div class="config-item">
+                            <span class="config-label">💡 Setup</span>
+                            <span class="config-value config-info">Run 'npm run setup' to configure your own keys</span>
+                        </div>
+                    `;
+                }
+                
+                configDiv.innerHTML = html;
+                configStatus.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading config status:', error);
+                // Hide config status if there's an error
+                document.getElementById('configStatus').style.display = 'none';
             }
         }
 

@@ -1,12 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import NASAImageAgent from './agent.js';
+import Config from './config.js';
 
-dotenv.config();
-
+const config = new Config();
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = config.port;
 
 // Middleware
 app.use(cors());
@@ -122,6 +121,24 @@ app.get('/api/agent-status', (req, res) => {
   }
 });
 
+// Configuration status and setup instructions
+app.get('/api/config-status', (req, res) => {
+  try {
+    const keyStatus = config.getKeyStatus();
+    const setupInstructions = config.getSetupInstructions();
+    const validation = config.validateConfiguration();
+    
+    res.json({
+      keyStatus,
+      setupInstructions,
+      validation,
+      fallbackKeys: config.isUsingFallbackKeys()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
@@ -145,4 +162,25 @@ app.listen(PORT, () => {
   console.log(`🚀 NASA MCP Server running on http://localhost:${PORT}`);
   console.log(`📡 MCP Server available at stdio`);
   console.log(`🔬 Agentic capabilities enabled`);
+  
+  // Show configuration status
+  const keyStatus = config.getKeyStatus();
+  const fallback = config.isUsingFallbackKeys();
+  
+  console.log('\n📋 Configuration Status:');
+  console.log(`🌍 NASA API: ${keyStatus.nasa.available ? '✅' : '❌'} (${keyStatus.nasa.source})`);
+  console.log(`🤖 OpenAI API: ${keyStatus.openai.available ? '✅' : '❌'} (${keyStatus.openai.source})`);
+  console.log(`🆓 Free Agent: ${keyStatus.freeAgent ? '✅' : '❌'}`);
+  
+  if (fallback.nasa || fallback.openai) {
+    console.log('\n💡 Using fallback API keys. To use your own keys:');
+    console.log('   1. Copy env.example to .env');
+    console.log('   2. Add your API keys to .env');
+    console.log('   3. Restart the server');
+  }
+  
+  console.log('\n🔗 API Endpoints:');
+  console.log(`   • Web Interface: http://localhost:${PORT}`);
+  console.log(`   • Config Status: http://localhost:${PORT}/api/config-status`);
+  console.log(`   • Agent Status: http://localhost:${PORT}/api/agent-status`);
 });

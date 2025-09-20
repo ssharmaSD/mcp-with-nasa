@@ -1,19 +1,18 @@
 import OpenAI from 'openai';
 import NASAMCPClient from './client.js';
 import FreeAgent from './free-agent.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import Config from './config.js';
 
 class NASAImageAgent {
   constructor() {
-    this.openai = process.env.OPENAI_API_KEY ? new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+    this.config = new Config();
+    this.openai = this.config.getOpenaiApiKey() ? new OpenAI({
+      apiKey: this.config.getOpenaiApiKey(),
     }) : null;
     this.mcpClient = new NASAMCPClient();
     this.freeAgent = new FreeAgent();
     this.imageCache = new Map();
-    this.useFreeAgent = !process.env.OPENAI_API_KEY || process.env.USE_FREE_AGENT === 'true';
+    this.useFreeAgent = !this.config.getOpenaiApiKey() || this.config.useFreeAgent;
   }
 
   async initialize() {

@@ -1,11 +1,10 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import Config from './config.js';
 
 class NASAMCPClient {
   constructor() {
-    this.nasaApiKey = process.env.NASA_API_KEY || 'DEMO_KEY';
+    this.config = new Config();
+    this.nasaApiKey = this.config.getNasaApiKey();
     this.nasaApiBase = 'https://api.nasa.gov/planetary/apod';
   }
 
