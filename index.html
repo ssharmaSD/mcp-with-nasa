@@ -193,6 +193,99 @@
             font-size: 0.9rem;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #4ecdc4;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            color: white;
+        }
+
+        .close {
+            color: #4ecdc4;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+
+        .close:hover {
+            color: #ff6b6b;
+        }
+
+        .quick-start-steps {
+            margin: 20px 0;
+        }
+
+        .step {
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid #4ecdc4;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .step-number {
+            background: #4ecdc4;
+            color: #0c0c0c;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+
+        .copy-btn {
+            background: #4ecdc4;
+            color: #0c0c0c;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #45b7d1;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -206,6 +299,12 @@
             .badges {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                padding: 20px;
             }
         }
     </style>
@@ -267,9 +366,9 @@
                 <a href="https://github.com/ssharmaSD/mcp-with-nasa" class="btn">
                     <i class="fab fa-github"></i> View on GitHub
                 </a>
-                <a href="https://github.com/ssharmaSD/mcp-with-nasa#quick-start" class="btn btn-secondary">
+                <button onclick="showQuickStart()" class="btn btn-secondary">
                     <i class="fas fa-play"></i> Quick Start
-                </a>
+                </button>
             </div>
         </div>
 
@@ -310,5 +409,128 @@
             </div>
         </div>
     </div>
+
+    <!-- Quick Start Modal -->
+    <div id="quickStartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeQuickStart()">&times;</span>
+            <h2><i class="fas fa-rocket"></i> Quick Start Guide</h2>
+            <p>Get the NASA APOD app running in under 2 minutes with our pre-configured API keys!</p>
+            
+            <div class="quick-start-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <strong>Clone the repository</strong>
+                        <div class="code-block">
+                            git clone https://github.com/ssharmaSD/mcp-with-nasa.git
+                            <button class="copy-btn" onclick="copyToClipboard('git clone https://github.com/ssharmaSD/mcp-with-nasa.git')">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <strong>Navigate to the project</strong>
+                        <div class="code-block">
+                            cd mcp-with-nasa
+                            <button class="copy-btn" onclick="copyToClipboard('cd mcp-with-nasa')">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <strong>Install dependencies</strong>
+                        <div class="code-block">
+                            npm install
+                            <button class="copy-btn" onclick="copyToClipboard('npm install')">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <strong>Start the application</strong>
+                        <div class="code-block">
+                            npm start
+                            <button class="copy-btn" onclick="copyToClipboard('npm start')">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <strong>Open your browser</strong>
+                        <div class="code-block">
+                            http://localhost:3000
+                            <button class="copy-btn" onclick="copyToClipboard('http://localhost:3000')">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(78, 205, 196, 0.1); border: 1px solid #4ecdc4; border-radius: 10px; padding: 15px; margin: 20px 0;">
+                <h3><i class="fas fa-key"></i> Pre-configured API Keys</h3>
+                <p>✅ <strong>NASA API:</strong> Already configured with our API key</p>
+                <p>✅ <strong>AI Agent:</strong> Free Agent mode (no costs)</p>
+                <p>✅ <strong>Full Functionality:</strong> All features work immediately</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="https://github.com/ssharmaSD/mcp-with-nasa" class="btn" style="margin-right: 10px;">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+                <button onclick="closeQuickStart()" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showQuickStart() {
+            document.getElementById('quickStartModal').style.display = 'block';
+        }
+
+        function closeQuickStart() {
+            document.getElementById('quickStartModal').style.display = 'none';
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show a brief success message
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#4caf50';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#4ecdc4';
+                }, 1000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('quickStartModal');
+            if (event.target == modal) {
+                closeQuickStart();
+            }
+        }
+    </script>
 </body>
 </html>
