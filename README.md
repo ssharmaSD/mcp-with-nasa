@@ -6,6 +6,8 @@ Note: This project was developed with the help of Cursor!
 
 ## 🌟 Features
 
+
+
 - **MCP Integration**: Full Model Context Protocol implementation for NASA API
 - **AI-Powered Analysis**: GPT-4 Vision integration for image analysis
 - **Interactive Web Interface**: Beautiful, responsive web UI
@@ -16,7 +18,9 @@ Note: This project was developed with the help of Cursor!
 
 ## 🌐 Live Demo
 
-**GitHub Pages**: [View Live Demo](https://ssharmaSD.github.io/mcp-with-nasa/)
+**GitHub Pages**: [View Landing Page](https://ssharmaSD.github.io/mcp-with-nasa/) (Static landing page)
+
+**Vercel Deployment**: [View Live App](https://mcp-with-nasa.vercel.app/) (Full interactive application)
 
 ## 🚀 Quick Start
 
@@ -293,24 +297,47 @@ The application provides real-time configuration status:
 - [OpenAI API Documentation](https://platform.openai.com/docs)
 - [Astronomy Picture of the Day](https://apod.nasa.gov/)
 
-## 🌐 GitHub Pages Deployment
+## 🚀 Deployment Options
 
-This project is automatically deployed to GitHub Pages! 
+### Option 1: Vercel (Recommended - Free)
 
-### View Live Demo
+Deploy the full interactive application to Vercel:
+
+1. **Fork this repository**
+2. **Connect to Vercel:**
+   - Go to [vercel.com](https://vercel.com)
+   - Sign in with GitHub
+   - Click "New Project"
+   - Import your forked repository
+3. **Deploy:**
+   - Vercel will automatically detect it's a Node.js app
+   - The `vercel.json` configuration is already included
+   - Your NASA API key is pre-configured
+4. **Access your app:**
+   - Get your live URL (e.g., `https://your-app.vercel.app`)
+   - Full functionality with API endpoints
+
+### Option 2: GitHub Pages (Static Landing Page)
+
+The project automatically deploys a beautiful landing page to GitHub Pages:
+
 - **Live Site**: https://ssharmaSD.github.io/mcp-with-nasa/
 - **Repository**: https://github.com/ssharmaSD/mcp-with-nasa
 
+### Option 3: Other Hosting Services
+
+You can also deploy to:
+- **Netlify** (with serverless functions)
+- **Railway** (free tier available)
+- **Heroku** (paid)
+- **DigitalOcean App Platform**
+
 ### Deploy Your Own
 1. Fork this repository
-2. Go to Settings → Pages
-3. Select "GitHub Actions" as source
-4. The site will automatically deploy on every push to main
-
-### Custom Domain (Optional)
-1. Add a `CNAME` file with your domain
-2. Configure DNS to point to `ssharmaSD.github.io`
-3. Enable HTTPS in GitHub Pages settings
+2. Choose your preferred hosting service
+3. Connect your GitHub repository
+4. Configure environment variables if needed
+5. Deploy!
 
 ## 🤝 Contributing
 

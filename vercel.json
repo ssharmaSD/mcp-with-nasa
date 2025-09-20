@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/src/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ],
+  "env": {
+    "NASA_API_KEY": "Kk9dgtd0FlR83k8m2U61pJFzdLze5Oa1anbnnlAU",
+    "USE_FREE_AGENT": "true",
+    "PORT": "3000",
+    "MCP_SERVER_PORT": "3001"
+  }
+}
