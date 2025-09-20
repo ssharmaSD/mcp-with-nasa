@@ -3,8 +3,18 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
@@ -14,27 +24,47 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
       
-    - name: Build
+    - name: Build static site
       run: |
-        echo "Building static site..."
-        # Create a simple static version for GitHub Pages
+        echo "Building static site for GitHub Pages..."
+        # Create the dist directory
         mkdir -p dist
-        cp -r public/* dist/
-        cp README.md dist/
-        cp FREE_AGENT_SETUP.md dist/
+        
+        # Copy the main index.html (our landing page)
+        cp index.html dist/
+        
+        # Copy public assets if they exist
+        if [ -d "public" ]; then
+          cp -r public/* dist/
+        fi
+        
+        # Copy documentation
+        cp README.md dist/ 2>/dev/null || echo "README.md not found"
+        cp FREE_AGENT_SETUP.md dist/ 2>/dev/null || echo "FREE_AGENT_SETUP.md not found"
+        
+        # Create a simple 404 page
+        echo '<!DOCTYPE html>
+        <html>
+        <head>
+          <title>404 - Page Not Found</title>
+          <meta http-equiv="refresh" content="0; url=/mcp-with-nasa/">
+        </head>
+        <body>
+          <p>Redirecting to <a href="/mcp-with-nasa/">main page</a>...</p>
+        </body>
+        </html>' > dist/404.html
+        
+        echo "Build complete! Contents:"
+        ls -la dist/
+        
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./dist
         
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/main'
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
+      id: deployment
+      uses: actions/deploy-pages@v4
